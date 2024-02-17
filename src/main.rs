@@ -1,10 +1,11 @@
 
-use std::{io, str::FromStr};
-use chess::{Board, BoardStatus, ChessMove, Square};
+use std::str::FromStr;
+use chess::{Board, BoardStatus};
 
 use pest::Parser;
 use pest_derive::Parser;
-
+pub mod uci_parser;
+use uci_parser::uci_to_move;
 #[derive(Parser)]
 #[grammar = "chess.pest"]
 struct ChessParser;
@@ -39,9 +40,10 @@ fn main() {
     match board {
         Ok(board) => {
             for chess_move in moves {
+                let parsed_move = uci_to_move(&chess_move).unwrap();
                 // e2e4 => ChessMove
                 // e2e4Q => ChessMove w/ promotion
-                board.make_move_new();
+                board.make_move_new(parsed_move);
             }
             match board.status() {
                 BoardStatus::Stalemate => println!("result: stalemate"),
@@ -52,8 +54,8 @@ fn main() {
         Err(err) => println!("err: {}", err),
     }
 
-    println!("fen: {}", fen);
-    println!("moves: {:?}", moves);
+    // println!("fen: {}", fen);
+    // println!("moves: {:?}", moves);
 
     /*
     let mut input = String::new();
