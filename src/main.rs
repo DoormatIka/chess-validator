@@ -1,16 +1,27 @@
 
 use std::io;
 use std::str::FromStr;
-use chess::{Board, BoardStatus, Game, GameResult};
+use chess::{Board, Game, GameResult, Piece};
 use mimalloc::MiMalloc;
 
 use pest::Parser;
 use pest_derive::Parser;
 pub mod uci_parser;
 use uci_parser::uci_to_move;
+
 #[derive(Parser)]
 #[grammar = "chess.pest"]
 struct ChessParser;
+
+#[derive(Debug)]
+struct PieceCount {
+    pawn: u8,
+    knight: u8,
+    bishop: u8,
+    rook: u8,
+    queen: u8,
+    king: u8
+}
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -23,7 +34,7 @@ fn main() {
         let parsed = match ChessParser::parse(Rule::game, input.as_str()) {
             Ok(parsed) => parsed,
             Err(_err) => {
-                println!("board err");
+                println!("parse err");
                 continue;
             },
         };
@@ -58,8 +69,13 @@ fn main() {
                     let parsed_move = uci_to_move(&chess_move).unwrap();
                     game.make_move(parsed_move);
                 }
+                
+                let piece_count = count_pieces(&game.current_position());
+                let material = insufficient_material(&piece_count);
+
                 let forced_draw = game.can_declare_draw();
-                if forced_draw {
+
+                if forced_draw || material {
                     println!("res stalemate");
                 } else {
                     match game.result() {
@@ -67,15 +83,56 @@ fn main() {
                             GameResult::WhiteCheckmates => println!("res white checkmate"),
                             GameResult::BlackCheckmates => println!("res black checkmate"),
                             GameResult::Stalemate => println!("res stalemate"),
-                            _ => println!(""),
+                            _ => (),
                         }
-                        None => ()
+                        None => println!("res ongoing")
                     };
                 }
             },
-            Err(_err) => println!("syntax err"),
+            Err(_err) => println!("board err"),
         }
 
     }
+}
+
+fn insufficient_material(piece_count: &PieceCount) -> bool {
+    piece_count.pawn <= 0 
+        && piece_count.knight <= 0 
+        && piece_count.bishop <= 0
+        && piece_count.rook <= 0
+        && piece_count.queen <= 0
+        && piece_count.king == 2
+}
+
+fn count_pieces(board: &Board) -> PieceCount {
+    let mut piece_count = PieceCount {
+        pawn: 0,
+        knight: 0,
+        bishop: 0,
+        rook: 0,
+        queen: 0,
+        king: 0,
+    };
+
+    for _ in board.pieces(Piece::Pawn).into_iter() {
+        piece_count.pawn += 1;
+    }
+    for _ in board.pieces(Piece::Knight).into_iter() {
+        piece_count.knight += 1;
+    }
+    for _ in board.pieces(Piece::Bishop).into_iter() {
+        piece_count.bishop += 1;
+    }
+    for _ in board.pieces(Piece::Rook).into_iter() {
+        piece_count.rook += 1;
+    }
+    for _ in board.pieces(Piece::Queen).into_iter() {
+        piece_count.queen += 1;
+    }
+    for _ in board.pieces(Piece::King).into_iter() {
+        piece_count.king += 1;
+    }
+
+    piece_count
 }
 
