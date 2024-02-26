@@ -12,7 +12,9 @@ Have something that scans stdio, and parse that.
     - `position fen [fen-string] moves [moves, e.g: e2e3 e4e5 d5d3Q]`
     - Note: O-O is replaced by e1g1 or their respective king castle positions.
 - Output
-    - `result: stalemate`
-    - `result: checkmate`
-    - `result: ongoing`
-    - `err: {}`
+    - `res white checkmate`
+    - `res black checkmate`
+    - `res stalemate`
+    - `res ongoing`
+    - `board err`
+    - `parse err`
