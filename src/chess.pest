@@ -1,5 +1,5 @@
-game = { "position"? ~ "fen" ~ fen ~ ("moves" ~ move)? }
+game = { "position"? ~ "fen" ~ fen ~ ("moves" ~ moves)? }
 fen = { (!("moves" | "fen") ~ ASCII)+ }
-move = { (!"moves" ~ move_part)+ }
+moves = { (!"moves" ~ move_part)+ }
 move_part = @{ (('a'..'f') ~ ('1'..'8')){2} ~ ("p" | "P" | "n" | "N" | "b" | "B" | "r" | "R" | "q" | "Q" | "k" | "K")? }
 WHITESPACE = _{" "}

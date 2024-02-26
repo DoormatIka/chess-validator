@@ -9,3 +9,9 @@ edition = "2021"
 chess = "3.2.0"
 pest = "2.7.7"
 pest_derive = "2.7.7"
+mimalloc = "0.1.39"
+
+[profile.release]
+panic = "abort"
+strip = "symbols"
+lto = "fat"
