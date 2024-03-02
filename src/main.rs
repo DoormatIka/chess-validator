@@ -80,7 +80,7 @@ fn main() {
                                 println!("move illegal");
                             }
                         },
-                        Err(_) => println!("move invalid"),
+                        Err(_) => println!("move unknown"),
                     }
                 }
 

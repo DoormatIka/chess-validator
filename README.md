@@ -21,6 +21,7 @@ Have something that scans stdio, and parse that.
     - `res stalemate`
     - `res ongoing`
     - `move legal`
-    - `move invalid`
+    - `move illegal`
+    - `move unknown`
     - `board err`
     - `parse err`
