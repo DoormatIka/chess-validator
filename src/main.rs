@@ -40,7 +40,8 @@ fn main() {
         };
 
         let mut fen: String = String::new();
-        let mut moves: Vec<String> = Vec::new();
+        let mut moves: Option<Vec<String>> = None;
+        let mut verifymove: Option<String> = None;
 
         for pair in parsed {
             match pair.as_rule() {
@@ -51,7 +52,10 @@ fn main() {
                                 fen = inner_pair.as_str().to_string();
                             }
                             Rule::moves => {
-                                moves = inner_pair.into_inner().map(|p| p.as_str().to_string()).collect();
+                                moves = Some(inner_pair.into_inner().map(|p| p.as_str().to_string()).collect());
+                            }
+                            Rule::verifymove => {
+                                verifymove = Some(inner_pair.as_str().to_string());
                             }
                             _ => {}
                         }
@@ -65,9 +69,26 @@ fn main() {
         match board {
             Ok(board) => {
                 let mut game = Game::new_with_board(board);
-                for chess_move in moves {
-                    let parsed_move = uci_to_move(&chess_move).unwrap();
-                    game.make_move(parsed_move);
+
+                if let Some(verifymove) = verifymove {
+                    match uci_to_move(&verifymove) {
+                        Ok(verifymove) => {
+                            let is_legal = board.legal(verifymove);
+                            if is_legal {
+                                println!("move legal");
+                            } else {
+                                println!("move illegal");
+                            }
+                        },
+                        Err(_) => println!("move invalid"),
+                    }
+                }
+
+                if let Some(moves) = moves {
+                    for chess_move in moves {
+                        let parsed_move = uci_to_move(&chess_move).unwrap();
+                        game.make_move(parsed_move);
+                    }
                 }
                 
                 let piece_count = count_pieces(&game.current_position());
