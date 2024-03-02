@@ -2,5 +2,5 @@ game = { "position"? ~ "fen" ~ fen ~ ("moves" ~ moves)? ~ ("verifymove" ~ verify
 fen = { (!("moves" | "fen" | "verifymove") ~ ASCII)+ }
 moves = { (!"moves" ~ move_part)+ }
 verifymove = { !"verifymove" ~ move_part }
-move_part = @{ (('a'..'f') ~ ('1'..'8')){2} ~ ("p" | "P" | "n" | "N" | "b" | "B" | "r" | "R" | "q" | "Q" | "k" | "K")? }
+move_part = @{ (('a'..'h') ~ ('1'..'8')){2} ~ ("p" | "P" | "n" | "N" | "b" | "B" | "r" | "R" | "q" | "Q" | "k" | "K")? }
 WHITESPACE = _{" "}
