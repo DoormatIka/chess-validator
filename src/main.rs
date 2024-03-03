@@ -70,10 +70,17 @@ fn main() {
             Ok(board) => {
                 let mut game = Game::new_with_board(board);
 
+                if let Some(moves) = moves {
+                    for chess_move in moves {
+                        let parsed_move = uci_to_move(&chess_move).unwrap();
+                        game.make_move(parsed_move);
+                    }
+                }
+
                 if let Some(verifymove) = verifymove {
                     match uci_to_move(&verifymove) {
                         Ok(verifymove) => {
-                            let is_legal = board.legal(verifymove);
+                            let is_legal = game.current_position().legal(verifymove);
                             if is_legal {
                                 println!("move legal");
                             } else {
@@ -81,13 +88,6 @@ fn main() {
                             }
                         },
                         Err(_) => println!("move unknown"),
-                    }
-                }
-
-                if let Some(moves) = moves {
-                    for chess_move in moves {
-                        let parsed_move = uci_to_move(&chess_move).unwrap();
-                        game.make_move(parsed_move);
                     }
                 }
                 

@@ -14,7 +14,7 @@ Have something that scans stdio, and parse that.
         - O-O and O-O-O (castling) is replaced by e1g1 or their respective king castle positions.
         - `moves` and `verifymove` are optional.
         - `moves` isn't checked if it's legal, but `verifymove` is. `verifymove` is slower than `moves`.
-        - `verifymove` is evaluated first before `moves`.
+        - `moves` is evaluated first before `verifymove`.
 - Output
     - `res white checkmate`
     - `res black checkmate`
