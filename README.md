@@ -9,13 +9,15 @@ I made this project to pass that burden to an executable file that any language 
 ## Usage
 Have something that scans stdio, and parse that.
 - Input
-    - `position fen [fen-string] moves [moves, e.g: e2e3 e4e5 d5d3Q] verifymove [move]`
+    - `position fen [fen-string] moves [moves, e.g: e2e3 e4e5 d5d3Q] verifymove [move] movestofen`
     - Notes: 
         - O-O and O-O-O (castling) is replaced by e1g1 or their respective king castle positions.
         - `moves` and `verifymove` are optional.
         - `moves` isn't checked if it's legal, but `verifymove` is. `verifymove` is slower than `moves`.
         - `moves` is evaluated first before `verifymove`.
+        - `movestofen` converts all the moves you have done into a resulting fen.
 - Output
+    - `fen [fen-string]`
     - `res white checkmate`
     - `res black checkmate`
     - `res stalemate`

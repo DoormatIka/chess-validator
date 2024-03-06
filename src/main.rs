@@ -42,6 +42,7 @@ fn main() {
         let mut fen: String = String::new();
         let mut moves: Option<Vec<String>> = None;
         let mut verifymove: Option<String> = None;
+        let mut movestofen = false;
 
         for pair in parsed {
             match pair.as_rule() {
@@ -56,6 +57,11 @@ fn main() {
                             }
                             Rule::verifymove => {
                                 verifymove = Some(inner_pair.as_str().to_string());
+                            }
+                            Rule::movestofen => {
+                                if inner_pair.as_str() == "movestofen" {
+                                    movestofen = true;
+                                }
                             }
                             _ => {}
                         }
@@ -108,6 +114,10 @@ fn main() {
                         }
                         None => println!("res ongoing")
                     };
+                }
+
+                if movestofen {
+                    println!("fen {}", game.current_position().to_string());
                 }
             },
             Err(_err) => println!("board err"),
